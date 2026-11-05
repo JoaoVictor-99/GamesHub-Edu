@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block titulo %}Editar partida{% endblock %}
+{% block conteudo %}
+<div class="form-caixa">
+  <h1 class="titulo-secao">{{ partida.emoji }} {{ partida.jogo_nome }}</h1>
+  <p class="texto-suave">{{ partida.pontos }} pontos em {{ partida.duracao_segundos }}s · {{ partida.criado_em[:16] }}</p>
+  <form method="post" class="cartao">
+    <label class="form-label">O que você aprendeu nessa partida?</label>
+    <textarea name="anotacao" class="form-control campo mb-3" rows="4" maxlength="300">{{ partida.anotacao }}</textarea>
+    <div class="d-flex gap-2">
+      <button class="btn btn-game">Salvar anotação</button>
+      <a href="{{ url_for('perfil') }}" class="btn btn-outline-neon">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

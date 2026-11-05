@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block titulo %}Ranking{% endblock %}
+{% block conteudo %}
+<h1 class="titulo-secao">🏆 Ranking</h1>
+<p class="texto-suave">Pontos = soma do melhor resultado de cada jogo (máx. 100 por jogo).</p>
+
+{% if ranking %}
+<div class="cartao p-0 overflow-hidden">
+  <table class="table tabela mb-0">
+    <thead><tr><th>#</th><th>Jogador</th><th class="text-center">Jogos</th><th class="text-end">Pontos</th></tr></thead>
+    <tbody>
+      {% for r in ranking %}
+      <tr class="{% if g.usuario and r.id == g.usuario.id %}eu{% endif %}">
+        <td class="posicao">{% if loop.index == 1 %}🥇{% elif loop.index == 2 %}🥈{% elif loop.index == 3 %}🥉{% else %}{{ loop.index }}{% endif %}</td>
+        <td>{{ r.avatar }} {{ r.nome }}{% if g.usuario and r.id == g.usuario.id %} <span class="selo">você</span>{% endif %}</td>
+        <td class="text-center">{{ r.jogos_jogados }}</td>
+        <td class="text-end fw-bold text-primary-neon">{{ r.pontos }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+  <div class="cartao text-center">Ninguém jogou ainda. <a href="{{ url_for('jogos') }}">Seja o primeiro!</a></div>
+{% endif %}
+{% endblock %}

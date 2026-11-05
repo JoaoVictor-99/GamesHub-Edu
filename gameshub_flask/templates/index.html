@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block titulo %}Início{% endblock %}
+{% block conteudo %}
+<section class="hero row align-items-center g-4 py-4">
+  <div class="col-md-7 anim-pop">
+    <span class="selo">✨ {{ total }} minijogos educativos</span>
+    <h1 class="display-titulo mt-3">Aprenda <span class="texto-gradiente">jogando</span>, suba no ranking.</h1>
+    <p class="lead texto-suave">Matemática, português, história, ciências, geografia, programação e TI — cada jogo com uma mecânica diferente.</p>
+    <div class="d-flex flex-wrap gap-2 mt-4">
+      <a href="{{ url_for('jogos') }}" class="btn btn-game btn-lg">Jogar agora →</a>
+      {% if not g.usuario %}
+        <a href="{{ url_for('cadastro') }}" class="btn btn-outline-neon btn-lg">Criar conta grátis</a>
+      {% else %}
+        <a href="{{ url_for('perfil') }}" class="btn btn-outline-neon btn-lg">Ver meu perfil</a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="col-md-5 text-center">
+    <div class="hero-arte anim-float">🎮</div>
+  </div>
+</section>
+
+<section class="row g-3 my-4">
+  {% for f in [("🧩", "7 jeitos de jogar", "Memória, forca, linha do tempo, robô programável, binário e mais."),
+               ("🏅", "Pontos e conquistas", "Seu melhor resultado em cada jogo vira pontos no ranking."),
+               ("📈", "Acompanhe seu progresso", "Veja o histórico de partidas e anote o que aprendeu.")] %}
+  <div class="col-md-4">
+    <div class="cartao h-100">
+      <div class="fs-2">{{ f[0] }}</div>
+      <h3 class="h5 mt-2">{{ f[1] }}</h3>
+      <p class="texto-suave mb-0">{{ f[2] }}</p>
+    </div>
+  </div>
+  {% endfor %}
+</section>
+
+<section class="my-5">
+  <div class="d-flex justify-content-between align-items-end mb-3">
+    <h2 class="titulo-secao mb-0">Comece por aqui</h2>
+    <a href="{{ url_for('jogos') }}" class="link-neon">Ver todos →</a>
+  </div>
+  <div class="row g-3">
+    {% for jogo in jogos %}{% include "_cartao_jogo.html" %}{% endfor %}
+  </div>
+</section>
+{% endblock %}
