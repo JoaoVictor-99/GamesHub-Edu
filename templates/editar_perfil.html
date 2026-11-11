@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block titulo %}Editar perfil{% endblock %}
+{% block conteudo %}
+<div class="form-caixa">
+  <h1 class="titulo-secao">Editar perfil</h1>
+  <form method="post" class="cartao" enctype="multipart/form-data">
+    <label class="form-label">Nome</label>
+    <input name="nome" class="form-control campo mb-3" value="{{ g.usuario.nome }}" required minlength="2">
+    <label class="form-label">Avatar</label>
+    <div class="avatares mb-3">
+      {% for a in avatares %}
+        <label><input type="radio" name="avatar" value="{{ a }}" {% if a == g.usuario.avatar and not g.usuario.avatar_imagem %}checked{% endif %}><span>{{ a }}</span></label>
+      {% endfor %}
+      {% if g.usuario.avatar_imagem %}
+        <label><input type="radio" name="avatar" value="__imagem_atual__" checked><span><img class="avatar-opcao-imagem" src="{{ url_for('servir_avatar_imagem', filename=g.usuario.avatar_imagem) }}" alt="Foto atual"></span></label>
+      {% endif %}
+    </div>
+    {% if possui_pacote_foto %}
+      <label class="form-label" for="avatar-imagem">Foto de perfil (PNG, JPG ou WebP, até 3 MB)</label>
+      <input class="form-control campo mb-2" id="avatar-imagem" name="avatar_imagem" type="file" accept="image/png,image/jpeg,image/webp">
+      <button class="btn btn-outline-neon btn-sm mb-2" id="abrir-camera" type="button">Tirar foto</button>
+      <div id="camera-aviso" class="texto-suave small mb-2" role="status"></div>
+      <div id="camera-painel" hidden>
+        <video id="camera-video" class="camera-preview" autoplay playsinline></video>
+        <button class="btn btn-outline-neon btn-sm mb-3" id="capturar-foto" type="button">Capturar foto</button>
+      </div>
+      <div id="imagem-preview-container" class="mb-3" hidden>
+        <img id="imagem-preview" class="avatar-preview" alt="Prévia da nova foto">
+      </div>
+    {% else %}
+      <p class="texto-suave small">Para usar uma foto própria, compre o pacote Foto de perfil na seção de skins.</p>
+    {% endif %}
+    <button class="btn btn-game w-100">Salvar</button>
+  </form>
+  <form method="post" action="{{ url_for('excluir_conta') }}" class="cartao mt-3 zona-perigo" onsubmit="return confirm('Excluir sua conta e todas as partidas? Isso não pode ser desfeito.')">
+    <strong>Zona de perigo</strong>
+    <p class="small texto-suave mb-2">Excluir a conta apaga também todo o seu histórico.</p>
+    <button class="btn btn-perigo btn-sm">Excluir minha conta</button>
+  </form>
+</div>
+{% if possui_pacote_foto %}<script src="{{ url_for('static', filename='js/avatar-camera.js') }}" defer></script>{% endif %}
+{% endblock %}

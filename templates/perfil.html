@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block titulo %}Meu perfil{% endblock %}
+{% block conteudo %}
+<div class="cartao d-flex flex-wrap align-items-center gap-3 mb-4">
+  <span class="avatar-grande skin-{{ g.usuario.skin }}">{% if g.usuario.avatar_imagem %}<img src="{{ url_for('servir_avatar_imagem', filename=g.usuario.avatar_imagem) }}" alt="Foto de {{ g.usuario.nome }}">{% else %}{{ g.usuario.avatar }}{% endif %}</span>
+  <div>
+    <h1 class="titulo-secao mb-0">{{ g.usuario.nome }}</h1>
+    <span class="texto-suave small">{{ g.usuario.email }}</span>
+  </div>
+  <div class="ms-md-auto d-flex flex-wrap gap-3 align-items-center">
+    <div class="estat"><strong>{{ total }}</strong><span>pontos</span></div>
+    <div class="estat"><strong>{{ partidas|length }}</strong><span>partidas</span></div>
+    <div class="estat"><strong><img class="moeda-icone" src="{{ url_for('static', filename='img/ada/moeda.png') }}" alt=""> {{ g.usuario.moedas }}</strong><span>moedas</span></div>
+    <a href="{{ url_for('editar_perfil') }}" class="btn btn-outline-neon btn-sm">Editar perfil</a>
+  </div>
+</div>
+
+<h2 class="h4 titulo-secao">Skins do perfil</h2>
+<p class="texto-suave small">Cada pacote de skin do perfil custa 150 moedas e libera cinco emojis do tema.</p>
+<div class="row g-3 mb-4">
+  {% for skin in skins %}
+  {% set possui = ("jogador", skin.slug) in compradas %}
+  <div class="col-6 col-md-4 col-lg-3">
+    <div class="cartao skin-item h-100 text-center skin-{{ skin.slug }}">
+      <div class="skin-amostra">{{ skin.icone }}</div>
+      <strong class="d-block mb-2">{{ skin.nome }}</strong>
+      {% if g.usuario.skin == skin.slug %}
+        <span class="texto-suave small">Em uso</span>
+      {% else %}
+        <form method="post" action="{{ url_for('gerenciar_skins') }}">
+          <input type="hidden" name="tipo" value="jogador"><input type="hidden" name="skin" value="{{ skin.slug }}">
+          <button class="btn btn-outline-neon btn-sm" type="submit">{% if possui %}Equipar{% elif skin.preco %}Comprar · {{ skin.preco }} 🪙{% else %}Equipar{% endif %}</button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="cartao d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+  <div class="d-flex align-items-center gap-3">
+    <div class="skin-amostra">{{ pacote_foto.icone }}</div>
+    <div>
+      <strong class="d-block">{{ pacote_foto.nome }}</strong>
+      <span class="texto-suave small">Desbloqueie o envio de uma imagem ou tire uma foto para usar como avatar.</span>
+    </div>
+  </div>
+  {% if ("foto", pacote_foto.slug) in compradas %}
+    <a class="btn btn-outline-neon btn-sm" href="{{ url_for('editar_perfil') }}">Escolher foto</a>
+  {% else %}
+    <form method="post" action="{{ url_for('gerenciar_skins') }}">
+      <input type="hidden" name="tipo" value="foto"><input type="hidden" name="skin" value="{{ pacote_foto.slug }}">
+      <button class="btn btn-outline-neon btn-sm" type="submit">Comprar · {{ pacote_foto.preco }} 🪙</button>
+    </form>
+  {% endif %}
+</div>
+
+<h2 class="h4 titulo-secao">Skins da Ada</h2>
+<div class="row g-3 mb-4">
+  {% for skin in skins_ada %}
+  {% set possui = ("ada", skin.slug) in compradas %}
+  <div class="col-6 col-md-4 col-lg-3">
+    <div class="cartao skin-item h-100 text-center">
+      <div class="skin-amostra">{{ skin.icone }}</div>
+      <strong class="d-block mb-2">{{ skin.nome }}</strong>
+      {% if g.usuario.skin_ada == skin.slug %}
+        <span class="texto-suave small">Em uso</span>
+      {% else %}
+        <form method="post" action="{{ url_for('gerenciar_skins') }}">
+          <input type="hidden" name="tipo" value="ada"><input type="hidden" name="skin" value="{{ skin.slug }}">
+          <button class="btn btn-outline-neon btn-sm" type="submit">{% if possui %}Equipar{% elif skin.preco %}Comprar · {{ skin.preco }} 🪙{% else %}Equipar{% endif %}</button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<h2 class="h4 titulo-secao">Conquistas</h2>
+<div class="row g-3 mb-4">
+  {% for c in conquistas %}
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="cartao conquista h-100 text-center {% if not c.ganha %}bloqueada{% endif %}">
+      <div class="fs-2">{{ c.icone if c.ganha else "🔒" }}</div>
+      <strong class="small d-block mt-1">{{ c.nome }}</strong>
+      <span class="texto-suave small">{{ c.descricao }}</span>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% if melhores %}
+<h2 class="h4 titulo-secao">Melhores resultados</h2>
+<div class="row g-2 mb-4">
+  {% for m in melhores %}
+  <div class="col-md-6">
+    <div class="cartao py-2 d-flex align-items-center gap-2">
+      <span class="fs-4">{{ m.emoji }}</span>
+      <div class="flex-grow-1">
+        <div class="d-flex justify-content-between small"><span>{{ m.nome }}</span><span>{{ m.melhor }}/100 · {{ m.vezes }}x</span></div>
+        <div class="barra"><div style="width: {{ m.melhor }}%"></div></div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<h2 class="h4 titulo-secao">Histórico de partidas</h2>
+<p class="texto-suave small">Mostrando até as 10 partidas mais recentes. As anteriores continuam contando para o ranking e as conquistas.</p>
+{% if partidas %}
+<div class="cartao p-0 overflow-hidden">
+  <div class="table-responsive">
+  <table class="table tabela mb-0 align-middle">
+    <thead><tr><th>Jogo</th><th>Pontos</th><th>Tempo</th><th>Anotação</th><th>Data</th><th></th></tr></thead>
+    <tbody>
+    {% for p in partidas %}
+      <tr>
+        <td>{{ p.emoji }} {{ p.jogo_nome }}</td>
+        <td class="fw-bold {% if p.pontos >= 70 %}text-sucesso{% elif p.pontos < 40 %}text-perigo{% endif %}">{{ p.pontos }}</td>
+        <td>{{ p.duracao_segundos }}s</td>
+        <td class="small texto-suave">{{ p.anotacao or "—" }}</td>
+        <td class="small">{{ p.criado_em[:16] }}</td>
+        <td class="text-end text-nowrap">
+          <a href="{{ url_for('editar_partida', partida_id=p.id) }}" class="btn btn-sm btn-outline-neon">Editar</a>
+          <form method="post" action="{{ url_for('excluir_partida', partida_id=p.id) }}" class="d-inline" onsubmit="return confirm('Excluir esta partida?')">
+            <button class="btn btn-sm btn-perigo">Excluir</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+{% else %}
+  <div class="cartao text-center">Você ainda não jogou. <a href="{{ url_for('jogos') }}">Escolha um jogo!</a></div>
+{% endif %}
+{% endblock %}

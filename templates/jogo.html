@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block titulo %}{{ jogo.nome }}{% endblock %}
+{% block conteudo %}
+<a href="{{ url_for('jogos') }}" class="link-neon small">← Voltar aos jogos</a>
+<div class="d-flex flex-wrap align-items-center gap-3 mt-2 mb-3">
+  <span class="emoji-jogo grande">{{ jogo.emoji }}</span>
+  <div>
+    <h1 class="titulo-secao mb-1">{{ jogo.nome }}</h1>
+    <span class="selo">{{ jogo.materia }}</span> <span class="texto-suave small ms-2">{{ jogo.faixa_etaria }}</span>
+  </div>
+  {% if recorde is not none %}
+    <div class="ms-md-auto recorde">🏆 Seu recorde: <strong>{{ recorde }}</strong>/100</div>
+  {% endif %}
+</div>
+
+<div class="cartao mb-3">
+  <strong class="text-primary-neon">Como jogar:</strong> {{ jogo.como_jogar }}
+</div>
+
+{% if not g.usuario %}
+  <div class="alerta alerta-aviso">Você pode jogar, mas <a href="{{ url_for('login', next=request.path) }}">entre na conta</a> para salvar seus pontos.</div>
+{% endif %}
+
+<div class="cartao palco" id="palco" data-jogo="{{ jogo.slug }}" data-logado="{{ 'sim' if g.usuario else 'nao' }}"
+     data-salvar="{{ url_for('criar_partida') }}"></div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/games.js') }}"></script>{% endblock %}

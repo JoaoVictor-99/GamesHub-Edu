@@ -1,0 +1,22 @@
+<div id="ada" class="ada" data-pagina="{{ request.endpoint or '' }}" data-img="{{ url_for('static', filename='img/ada/') }}"
+  data-nome="{{ g.usuario.nome if g.usuario else '' }}" data-skin="{{ g.usuario.skin_ada if g.usuario else 'padrao' }}">
+  <div class="ada-painel" id="ada-painel" hidden>
+    <div class="ada-topo">
+      <img id="ada-rosto-chat" class="ada-rosto-mini" src="{{ url_for('static', filename='img/ada/feliz.png') }}" alt="Ada">
+      <div><strong>Ada</strong><small class="d-block texto-suave">Sua guia no GamesHub</small></div>
+      <button class="ada-fechar" id="ada-fechar" aria-label="Fechar chat">✕</button>
+    </div>
+    <div class="ada-msgs" id="ada-msgs" aria-live="polite"></div>
+    <div class="ada-sugestoes" id="ada-sugestoes">
+      <button>Qual jogo eu jogo primeiro?</button><button>Como funciona o ranking?</button><button>Me explica frações</button>
+    </div>
+    <form class="ada-form" id="ada-form">
+      <input id="ada-input" maxlength="500" placeholder="Pergunte algo para a Ada…" autocomplete="off">
+      <button class="btn btn-game btn-sm" type="submit">Enviar</button>
+    </form>
+  </div>
+  <div class="ada-balao" id="ada-balao" hidden></div>
+  <button class="ada-avatar" id="ada-avatar" aria-label="Conversar com a Ada">
+    <img id="ada-rosto" src="{{ url_for('static', filename='img/ada/feliz.png') }}" alt="Ada">
+  </button>
+</div>

@@ -1,0 +1,13 @@
+<div class="col-sm-6 col-lg-4">
+  <a href="{{ url_for('jogo', slug=jogo.slug) }}" class="cartao cartao-jogo h-100 d-block">
+    <div class="d-flex justify-content-between align-items-start">
+      <span class="emoji-jogo">{{ jogo.emoji }}</span>
+      <span class="selo">{{ jogo.materia }}</span>
+    </div>
+    <h3 class="h5 mt-3 mb-1">{{ jogo.nome }}</h3>
+    <p class="texto-suave small mb-3">{{ jogo.descricao }}</p>
+    <div class="d-flex justify-content-between small texto-suave">
+      <span>🎲 {{ jogo.mecanica }}</span><span>{{ jogo.faixa_etaria }}</span>
+    </div>
+  </a>
+</div>

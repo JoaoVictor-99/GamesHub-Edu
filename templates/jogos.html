@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block titulo %}Jogos{% endblock %}
+{% block conteudo %}
+<h1 class="titulo-secao">Escolha seu jogo</h1>
+<p class="texto-suave">Filtre por matéria e jogue quantas vezes quiser — só o seu melhor resultado conta no ranking.</p>
+
+<div class="d-flex flex-wrap gap-2 my-3">
+  <a href="{{ url_for('jogos') }}" class="filtro {% if not materia %}ativo{% endif %}">Todas</a>
+  {% for m in materias %}
+    <a href="{{ url_for('jogos', materia=m) }}" class="filtro {% if m == materia %}ativo{% endif %}">{{ m }}</a>
+  {% endfor %}
+</div>
+
+<div class="row g-3">
+  {% for jogo in jogos %}
+    {% include "_cartao_jogo.html" %}
+  {% else %}
+    <p class="texto-suave">Nenhum jogo nessa matéria ainda.</p>
+  {% endfor %}
+</div>
+{% endblock %}
